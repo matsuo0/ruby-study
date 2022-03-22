@@ -10,6 +10,8 @@ ruby 勉強用
 https://qiita.com/goya-hideaki/items/2597b39b966cb37ec9e1
 
 ## ファイル構成
+
+```
 .
 ├── docker
 │   ├── app
@@ -26,3 +28,4 @@ https://qiita.com/goya-hideaki/items/2597b39b966cb37ec9e1
 ├── docker-compose.yml
 ├── Gemfile
 └── Gemfile.lock
+```
