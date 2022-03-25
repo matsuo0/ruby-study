@@ -2,23 +2,34 @@ class BoardsController < ApplicationController
   before_action :set_target_board, only: %i[show edit update destroy]
 
   def index
-    @boards = Board.all
+    @boards = Board.page(params[:page])
   end
 
   def new
-    @board = Board.new
+    @board = Board.new(flash[:board])
     # byebug
     # binding.pry
   end
 
   def create
-    board = Board.create(board_params)
-    redirect_to board
+    board = Board.new(board_params)
+    if board.save
+      flash[:notice] = "「#{board.title}」の掲示板を作成しました"
+      redirect_to board
+    else
+      redirect_to new_board_path, flash: {
+        board: board,
+        error_messages: board.errors.full_messages
+      }
+    end
+
     # binding.pry
   end
 
   def show
-    # @board = Board.find(params[:id])    
+    # @board = Board.find(params[:id])
+    @comment = Comment.new(board_id: @board.id)
+    #@comment = @board.comments.new  
   end
 
   def edit
@@ -27,16 +38,22 @@ class BoardsController < ApplicationController
 
   def update
     # board = Board.find(params[:id])
-    board.update(board_params)
-
-    redirect_to board
+    # @board.update(board_params)
+    if @board.update(board_params)
+      redirect_to @board
+    else
+      redirect_to edit_board_path, flash: {
+        board: @board,
+        error_messages: @board.errors.full_messages
+      }
+    end
   end
   
   def destroy
     # board = Board.find(params[:id])
-    board.delete
+    @board.delete
 
-    redirect_to boards_path
+    redirect_to boards_path, flash: {notice: "「#{@board.title}」の掲示板が削除されました。"}
   end
 
   private
